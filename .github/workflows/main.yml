@@ -16,13 +16,13 @@ jobs:                                                                 # top-leve
         run: echo "Hey, you! Yes you. Welcome to my world!"           # "run" implies we're running a shell/terminal script
       - name: get_output                                              # Let's try to take output from job one and use it in job two. We'll need to first take it from step level to job level, then we can access it in the other job.
         id: get_output                                                # in order to get the output to job level, we'll need that particular step to have an id
-        run: echo "msg = Name please?" >> "$GITHUB_OUTPUT"            # appending the output to the file "$GITHUB_OUTPUT" is necessary for later use as github automatically clears its ram of any previous steps before running the next
+        run: echo "msg=Did I even know your names?" >> "$GITHUB_OUTPUT" # appending the output to the file "$GITHUB_OUTPUT" is necessary for later use as github automatically clears its ram of any previous steps before running the next
         
   job-two:                                                            # Jobs in actions run in parallel by default, unless implicitly declared
     runs-on: ubuntu-latest
     needs: job-one                                                    # The "needs" keyword is used to specify that this job may only run after another is done.
     outputs:
-      ask: ${{steps.job-three-msg.outputs.msg}}
+      comment: ${{steps.job-three-msg.outputs.msg}}
     steps:
       - name: message from job one
         run: echo "Message from job one; '${{needs.job-one.outputs.ask}}'"
@@ -30,11 +30,11 @@ jobs:                                                                 # top-leve
         run: echo "So you've decided to leave huh? It's alright. You'll be back :)"
       - name: message to job three
         id: job-three-msg
-        run: echo "msg = I told you he'd be back :]" >> "$GITHUB_OUTPUT"
+        run: echo "msg=I told you he'd be back :]" >> "$GITHUB_OUTPUT"
 
   job-three:
     runs-on: ubuntu-latest
     needs: job-two
     steps:
       - name: message from job two
-        run: echo "Message; '${{needs.job-two.outputs.ask}}'"
+        run: echo "Message; '${{needs.job-two.outputs.comment}}'"
