@@ -1,0 +1,14 @@
+name: my_first_workflow        # This is the name of the workflow
+
+on:                            # root keyword that triggers workflow, indicates what event we'll be listening for
+  push:                        # standard indentation is 2 spaces (NOT TAB!!!)
+    branches:
+      - main
+
+jobs:                           # top-level job section
+  job-one:                      # job id that must be unique across the entire workflow
+    runs-on: ubuntu-latest      # basically a server upon which the job runs
+    steps:                      # what does the job actually do?
+      - uses: actions/checkout@v4   # "uses" implies an external action being called upon. "actions/checkout@v4" is a repo that contains code, whose role is to make your source code is available to the workflow (only fetches one commit)
+      - name: greeting              # In this case, "name" is the step and refers to the run entry. that's why the run entry is indented within it.
+        run: echo "Hey, you! Yes you. Welcome to my world!"  # "run" implies we're running a shell/terminal script
