@@ -21,8 +21,20 @@ jobs:                                                                 # top-leve
   job-two:                                                            # Jobs in actions run in parallel by default, unless implicitly declared
     runs-on: ubuntu-latest
     needs: job-one                                                    # The "needs" keyword is used to specify that this job may only run after another is done.
+    outputs:
+      ask: ${{steps.job-three-msg.outputs.msg}}
     steps:
       - name: message from job one
         run: echo "Message from job one; '${{needs.job-one.outputs.ask}}'"
       - name: sendoff
         run: echo "So you've decided to leave huh? It's alright. You'll be back :)"
+      - name: message to job three
+        id: job-three-msg
+        run: echo "msg = I told you he'd be back :]" >> "$GITHUB_OUTPUT"
+
+  job-three:
+    runs-on: ubuntu-latest
+    needs: job-two
+    steps:
+      - name: message from job two
+        run: echo "Message; '${{needs.job-two.outputs.ask}}'"
