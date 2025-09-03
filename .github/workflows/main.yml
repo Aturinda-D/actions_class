@@ -23,6 +23,6 @@ jobs:                                                                 # top-leve
     needs: job-one                                                    # The "needs" keyword is used to specify that this job may only run after another is done.
     steps:
       - name: message from job one
-        run: echo "Message from job one:'${{needs.job_one.outputs.ask}}'"
+        run: echo "Message from job one; '${{needs.job-one.outputs.ask}}'"
       - name: sendoff
         run: echo "So you've decided to leave huh? It's alright. You'll be back :)"
