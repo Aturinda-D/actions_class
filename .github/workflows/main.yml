@@ -9,13 +9,13 @@ jobs:                                                                 # top-leve
   job-one:                                                            # job id that must be unique across the entire workflow
     runs-on: ubuntu-latest                                            # basically a server upon which the job runs
     outputs:
-      ask: ${{steps.get_output_id.outputs.msg}}
+      ask: ${{steps.get_output.outputs.msg}}
     steps:                                                            # what does the job actually do?
       - uses: actions/checkout@v4                                     # "uses" implies an external action being called upon. "actions/checkout@v4" is a repo that contains code, whose role is to make your source code is available to the workflow (only fetches one commit)
       - name: greeting                                                # In this case, "name" is the step and refers to the run entry. that's why the run entry is indented within it.
         run: echo "Hey, you! Yes you. Welcome to my world!"           # "run" implies we're running a shell/terminal script
       - name: get_output                                              # Let's try to take output from job one and use it in job two. We'll need to first take it from step level to job level, then we can access it in the other job.
-        id: get_output_id                                             # in order to get the output to job level, we'll need that particular step to have an id
+        id: get_output                                                # in order to get the output to job level, we'll need that particular step to have an id
         run: echo "msg = Name please?" >> "$GITHUB_OUTPUT"            # appending the output to the file "$GITHUB_OUTPUT" is necessary for later use as github automatically clears its ram of any previous steps before running the next
         
   job-two:                                                            # Jobs in actions run in parallel by default, unless implicitly declared
@@ -23,6 +23,6 @@ jobs:                                                                 # top-leve
     needs: job-one                                                    # The "needs" keyword is used to specify that this job may only run after another is done.
     steps:
       - name: message from job one
-        run: echo "Message from job one; ${{needs.job_one.outputs.ask}}"
+        run: echo "Message from job one:'${{needs.job_one.outputs.ask}}'"
       - name: sendoff
         run: echo "So you've decided to leave huh? It's alright. You'll be back :)"
